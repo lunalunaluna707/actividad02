@@ -70,7 +70,7 @@ def evento():
             con.close()
             message = 'Usuario agregado exitosamente!'
             pusher_client.trigger('my-channel', 'my-event', {'message': f'Nuevo evento: {nombre}, {comentario}, {calificacion}'})
-        except mysql.connect.Error as err:
+        except mysql.connector.Error as err:
             print("error al conectar msql:", err)
             message="Error al insertar usuario"
         finally:
