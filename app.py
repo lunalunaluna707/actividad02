@@ -40,6 +40,8 @@ def formulario():
 
 @app.route('/editar/<int:id>', methods=['GET','POST'])
 def editar(id, message=None):
+    con= None
+    registros=[]
     try:
         con = mysql.connector.connect(
         host="185.232.14.52",
@@ -47,19 +49,23 @@ def editar(id, message=None):
         user="u760464709_tst_sep_usr",
         password="dJ0CIAFF="
         )
+        if not con.is_connected():
+            raise msql.connector.Error('No se pudo conectar a la base de datos')
+        
         cursor = con.cursor()
         sql= "SELECT * FROM tst0_experiencias WHERE Id_Experiencia= %s"
         cursor.execute(sql,(id,))
         registros = cursor.fetchall()
         if len(registros)==0:
-            message="no se encontro registro con este ID"
+            message="No se encontro registro con este ID"
             return render_template('editar.html', message=message, registros=[])
         print("Registros obtenidos:", registros)
     except mysql.connector.Error as err:
         print("Error al conectar con MySQL:", err)
         registros = []  
+        message="No se pudo conectar. Verificar conexión."
     finally:
-        if con.is_connected():
+        if con and con.is_connected():
             cursor.close()
             con.close()
     
@@ -67,17 +73,26 @@ def editar(id, message=None):
 
 @app.route("/tabla")
 def index():
-    con = mysql.connector.connect(
-        host="185.232.14.52",
-        database="u760464709_tst_sep",
-        user="u760464709_tst_sep_usr",
-        password="dJ0CIAFF="
-        )
-    con.close()
+    con=None
+    try:
+        con = mysql.connector.connect(
+            host="185.232.14.52",
+            database="u760464709_tst_sep",
+            user="u760464709_tst_sep_usr",
+            password="dJ0CIAFF="
+            )
+    except mysql.connector.Error as err:
+        print("Error al conectar:", err)
+        return "No se pudo conectar. Verifique su conexion", 500
+    finally:
+        if con and con.is_connected():
+            con.close()
     return render_template("calificaciones.html")
 
 @app.route('/evento', methods=["GET","POST"])
 def evento():
+    con= None
+    message=""
     if request.method=='POST':
         nombre=request.form['txtnombreApellido']
         comentario=request.form['txtcomentario']
@@ -101,7 +116,7 @@ def evento():
             print("error al conectar msql:", err)
             message="Error al enviar encuesta"
         finally:
-             if con.is_connected():
+             if con:
                 cursor.close()
                 con.close()
         
@@ -159,6 +174,7 @@ def eliminar(id):
     #return redirect(url_for('vistatabla'))
 @app.route('/actualizar/<int:id>', methods=['GET','POST'])
 def actualizar(id):
+    con=None 
     if request.method=='POST':
         Nuevo_nombre=request.form['txtnombreApellido']
         Nuevo_comentario=request.form['txtcomentario']
@@ -182,7 +198,7 @@ def actualizar(id):
             print("Error al modificar con MySQL:", err)
             message="Error al modificar"
         finally:
-            if con.is_connected():
+            if con and con.is_connected():
                 cursor.close()
                 con.close()
         return editar(id, message=message)
