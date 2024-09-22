@@ -10,6 +10,7 @@
   <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
 
   <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
     body{
       background-color: rgb(126, 147, 155);
@@ -86,8 +87,10 @@
                         <td>${registro[3]}</td>
                         <td>${registro[2]}</td>
                         <td>
-                            <button id="btneliminar" name="btneliminar" class="btn btn-danger" type="submit" onclick="eliminar(${registro[0]})"> <i class="ri-delete-bin-2-line"></i> Eliminar</button>
-                            <button id="btneditar" name="btneditar" class="btn btn-warning" type="submit"  onclick="window.location.href='/editar/${registro[0]}'"> <i class="ri-edit-2-line"></i> Editar</button>
+                          <div>
+                            <button id="btneliminar" name="btneliminar" class="btn btn-danger mb-2" type="submit" onclick="confirmarEliminacion(${registro[0]})"> <i class="ri-delete-bin-2-line"></i></button>
+                            <button id="btneditar" name="btneditar" class="btn btn-warning mb-2" type="submit"  onclick="window.location.href='/editar/${registro[0]}'"> <i class="ri-edit-2-line"></i></button>
+                          </div>
                         </td>
                     </tr>`);
                 }
@@ -111,6 +114,45 @@
           console.log('Se cancelo la eliminacion');
 
         }
+      }
+      function confirmarEliminacion(id){
+        swal.fire({
+          title:'¿Estas seguro de eliminar esta calificación?',
+          text:'No podras revetir esta acción',
+          imageUrl:'https://i.pinimg.com/originals/c7/fa/43/c7fa432ac8d276253f688654cf1b5e60.jpg',
+          imageWidth:150,
+          imageHeight:150,
+          imageAlt: 'Imagen de confirmación',
+          showCancelButton:true,
+          confirmButtonColor:'#3085d6',
+          cancelButtonColor:"#d33",
+          confirmButtonText:'Aceptar',
+          cancelButtonText:'Cancelar'
+        }).then((result)=>{
+          if(result.isConfirmed){
+            $.ajax({
+            url:`/eliminar/${id}`,
+            type:'POST',
+            success:function(){
+              swal.fire(
+                'Eliminado',
+                'El elemento ha sido eliminado',
+                'success'
+
+              );
+              buscar();
+            },
+            error:function(err){
+              swal.fire(
+                'Hubo un error',
+                'El elemento no se ha podido eliminar',
+                'error'
+
+              );
+            }
+          });
+        }
+        });
       }
        
   </script>
