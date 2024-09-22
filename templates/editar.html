@@ -25,11 +25,17 @@
 <div class="container p-5 my-5 border" id="contenedor" name="contenedor">
   <h2>Encuesta de experiencia</h2>
   {% if message %}
-  <p class="alert alert-success"> {{ message }}</p>
+    {% if 'No se pudo conectar' in message or 'No se encontro registro' in message %}
+      <p class="alert alert-danger"> {{ message }}</p>
+    {% else %}
+      <p class="alert alert-success"> {{ message }}</p>
+    {% endif %}
   {% endif %}
+
+
+  {% if registros and registros|length > 0 %}
+
   <form id="basic-form" action="{{ url_for('actualizar', id=registros[0][0]) }}" method="post">
-  
-  
     <div class="mb-3 mt-3">
       <label for="nombreApellido">Ingresa tu nombre y apellido: <span>(requiere, tener de 10 a 50 caracteres)</span></label>
       <input type="text" class="form-control" value="{{registros[0][1]}}" id="txtnombreApellido" placeholder="Nombre y apellido" name="txtnombreApellido" required>
@@ -37,7 +43,7 @@
 
     <div class="mb-3">
       <label for="comentario">Ingresa tu comentario: <span>(requiere, tener de 10 a 50 caracteres)</span></label>
-      <input type="text" class="form-control" id="txtcomentario" value="{{registros[0][2]}}" placeholder="Comentario" minlength="10" maxlength="50" name="txtcomentario" required>
+      <input type="text" class="form-control" id="txtcomentario" value="{{registros[0][2]}}" placeholder="Comentario"  name="txtcomentario" required>
     </div>
 
     <div class="mb-3">
@@ -47,6 +53,9 @@
     
     <button type="submit" id="btncalcular" name="btncalcular" class="btn btn-warning "  >Actualizar encuesta</button>
   </form><br>
+  {% else %}
+  <p>No hay datos disponibles para mostrar</p>
+  {% endif %}
   <a type="submit" id="btnvercalificar" name="btnvercalificar" class="btn btn-dark" href="{{ url_for('index') }}" >Ver calificaciones</a>
 </div>
 <script>
