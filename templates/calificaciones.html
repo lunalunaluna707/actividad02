@@ -196,12 +196,14 @@
             url:`/eliminar/${id}`,
             type:'POST',
             success:function(){
-              swal.fire(
-                'Eliminado',
-                'El elemento ha sido eliminado',
-                'success'
-
-              );
+             swal.fire({
+              title: 'Eliminado',
+              text:  'El elemento ha sido eliminado',
+              imageUrl:'https://pbs.twimg.com/media/F_DmimsXoAAWeeY?format=jpg&name=large',
+              imageWidth:150,
+              imageHeight:150,
+                
+            });
               buscar();
             },
             error:function(err){
