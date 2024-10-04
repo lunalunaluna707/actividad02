@@ -133,7 +133,7 @@ def vistatabla():
         password="dJ0CIAFF="
         )
         cursor = con.cursor()
-        cursor.execute("SELECT * FROM tst0_experiencias")    
+        cursor.execute("SELECT * FROM tst0_experiencias ORDER BY Id_Experiencia DESC LIMIT 1")    
         registros = cursor.fetchall()
         print("Registros obtenidos:", registros)
     except mysql.connector.Error as err:
