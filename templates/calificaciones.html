@@ -57,7 +57,71 @@
     </tbody>
   </table>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<div class="app-float-button bg-body" style="z-index: 3; position: fixed; bottom: 5px; left: 5px; cursor: pointer;">
+    <ul class="list-group list-group-horizontal">
+        <li class="list-group-item" data-bs-theme-value="light">
+            <i class="bi bi-sun-fill"></i>
+        </li>
+        <li class="list-group-item" data-bs-theme-value="dark">
+            <i class="bi bi-moon-stars-fill"></i>
+        </li>
+        <li class="list-group-item" data-bs-theme-value="auto">
+            <i class="bi bi-circle-half"></i>
+        </li>
+    </ul>
+</div>
+<script>
+    /*!
+    * Color mode toggler for Bootstrap's docs (https://getbootstrap.com/)
+    * Copyright 2011-2022 The Bootstrap Authors
+    * Licensed under the Creative Commons Attribution 3.0 Unported License.
+    */
 
+    /** Reescrito */
+
+    var bootstrapTheme = localStorage.getItem("theme")
+
+    function getPreferredTheme() {
+        if (bootstrapTheme) {
+            return bootstrapTheme
+        }
+
+        return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+    }
+
+    function setTheme(theme) {
+        if (theme === "auto" && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            document.documentElement.setAttribute("data-bs-theme", "dark")
+        }
+        else {
+            document.documentElement.setAttribute("data-bs-theme", ((theme == "auto") ? "light" : theme))
+        }
+    }
+
+    function showActiveTheme(theme) {
+        $("[data-bs-theme-value]").removeClass("bg-primary text-white active")
+        $(`[data-bs-theme-value="${theme}"]`).addClass("bg-primary text-white active")
+    }
+
+    $(document).on("click", '[data-bs-theme-value]', function (event) {
+        const theme = this.getAttribute("data-bs-theme-value")
+        localStorage.setItem("theme", theme)
+        setTheme(theme)
+        showActiveTheme(theme)
+    })
+
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function (event) {
+        if (bootstrapTheme !== "light"
+        || bootstrapTheme !== "dark") {
+            setTheme(getPreferredTheme())
+        }
+    })
+
+    document.addEventListener("DOMContentLoaded", function (event) {
+        setTheme(bootstrapTheme)
+        showActiveTheme(getPreferredTheme())
+    })
+</script>
   <script>
 
     // Enable pusher logging - don't include this in production
